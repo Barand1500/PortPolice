@@ -1,0 +1,17 @@
+{
+  "name": "portpolice",
+  "version": "1.0.0",
+  "description": "A modern desktop port manager application - Monitor, manage and kill active ports",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "keywords": ["port", "manager", "electron", "network", "process"],
+  "author": "Baran",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^40.8.0"
+  }
+}

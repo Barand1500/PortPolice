@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; script-src 'self';">
+  <title>PortPolice</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ─── Custom Title Bar ─── -->
+  <div class="titlebar" id="titlebar">
+    <div class="titlebar-left">
+      <div class="app-icon">🚔</div>
+      <span class="app-title">PortPolice</span>
+      <span class="app-version">v1.0</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="tb-btn minimize" id="btn-minimize" title="Minimize">
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect y="5" width="12" height="2" fill="currentColor"/></svg>
+      </button>
+      <button class="tb-btn maximize" id="btn-maximize" title="Maximize">
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      </button>
+      <button class="tb-btn close" id="btn-close" title="Close">
+        <svg width="12" height="12" viewBox="0 0 12 12"><line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="1.5"/><line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── Main Content ─── -->
+  <div class="main-container">
+    
+    <!-- ─── Sidebar ─── -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3>Dashboard</h3>
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-number" id="total-ports">0</div>
+            <div class="stat-label">Active Ports</div>
+          </div>
+          <div class="stat-card accent">
+            <div class="stat-number" id="total-tcp">0</div>
+            <div class="stat-label">TCP</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-number" id="total-udp">0</div>
+            <div class="stat-label">UDP</div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-number" id="total-listening">0</div>
+            <div class="stat-label">Listening</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Quick Filters</h3>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">All Ports</button>
+          <button class="filter-btn" data-filter="tcp">TCP Only</button>
+          <button class="filter-btn" data-filter="udp">UDP Only</button>
+          <button class="filter-btn" data-filter="listening">Listening</button>
+          <button class="filter-btn" data-filter="established">Established</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Browser Filter</h3>
+        <div class="browser-filter-list" id="browser-filter-list">
+          <button class="browser-filter-btn active" data-browser="all">
+            <span class="browser-icon">🌍</span>
+            <span class="browser-name">All Browsers</span>
+            <span class="browser-count" id="count-all-browsers">0</span>
+          </button>
+          <button class="browser-filter-btn" data-browser="chrome.exe">
+            <span class="browser-icon">🌐</span>
+            <span class="browser-name">Google Chrome</span>
+            <span class="browser-count" id="count-chrome">0</span>
+          </button>
+          <button class="browser-filter-btn" data-browser="msedge.exe">
+            <span class="browser-icon">🔵</span>
+            <span class="browser-name">Microsoft Edge</span>
+            <span class="browser-count" id="count-edge">0</span>
+          </button>
+          <button class="browser-filter-btn" data-browser="firefox.exe">
+            <span class="browser-icon">🦊</span>
+            <span class="browser-name">Mozilla Firefox</span>
+            <span class="browser-count" id="count-firefox">0</span>
+          </button>
+          <button class="browser-filter-btn" data-browser="opera.exe">
+            <span class="browser-icon">🔴</span>
+            <span class="browser-name">Opera</span>
+            <span class="browser-count" id="count-opera">0</span>
+          </button>
+          <button class="browser-filter-btn" data-browser="brave.exe">
+            <span class="browser-icon">🦁</span>
+            <span class="browser-name">Brave</span>
+            <span class="browser-count" id="count-brave">0</span>
+          </button>
+          <button class="browser-filter-btn" data-browser="vivaldi.exe">
+            <span class="browser-icon">🎵</span>
+            <span class="browser-name">Vivaldi</span>
+            <span class="browser-count" id="count-vivaldi">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Auto Refresh</h3>
+        <div class="refresh-control">
+          <label class="toggle-switch">
+            <input type="checkbox" id="auto-refresh-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+          <select id="refresh-interval" class="select-mini">
+            <option value="3000">3s</option>
+            <option value="5000" selected>5s</option>
+            <option value="10000">10s</option>
+            <option value="30000">30s</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ─── Content Area ─── -->
+    <main class="content">
+      <!-- ─── Top Bar ─── -->
+      <div class="top-bar">
+        <div class="search-container">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="search-input" placeholder="Search by port, PID, or process name..." autocomplete="off">
+          <kbd class="search-kbd">Ctrl+F</kbd>
+        </div>
+        <div class="top-actions">
+          <button class="action-btn refresh" id="btn-refresh" title="Refresh">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            <span>Refresh</span>
+          </button>
+          <div class="port-count">
+            <span id="visible-count">0</span> shown
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Table + Detail Split ─── -->
+      <div class="content-split">
+        <!-- ─── Table ─── -->
+        <div class="table-wrapper">
+          <table class="port-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="proto">Protocol <span class="sort-arrow">↕</span></th>
+                <th class="sortable" data-sort="port">Port <span class="sort-arrow">↕</span></th>
+                <th>Address</th>
+                <th class="sortable" data-sort="pid">PID <span class="sort-arrow">↕</span></th>
+                <th class="sortable" data-sort="processName">Process <span class="sort-arrow">↕</span></th>
+                <th class="sortable" data-sort="state">Status <span class="sort-arrow">↕</span></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="port-table-body">
+            </tbody>
+          </table>
+
+          <!-- ─── Loading State ─── -->
+          <div class="loading-state" id="loading-state">
+            <div class="spinner"></div>
+            <p>Scanning ports...</p>
+          </div>
+
+          <!-- ─── Empty State ─── -->
+          <div class="empty-state hidden" id="empty-state">
+            <div class="empty-icon">🔍</div>
+            <p>No ports found matching your criteria</p>
+          </div>
+        </div>
+
+        <!-- ─── Detail Panel ─── -->
+        <div class="detail-panel hidden" id="detail-panel">
+          <div class="detail-panel-header">
+            <h3>
+              <span id="detail-icon">📦</span>
+              <span id="detail-title">Process Details</span>
+            </h3>
+            <button class="detail-close-btn" id="detail-close" title="Close">✕</button>
+          </div>
+          <div class="detail-panel-body" id="detail-body">
+            <div class="detail-loading">
+              <div class="spinner"></div>
+              <p>Loading details...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── Toast Container ─── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ─── Confirm Modal ─── -->
+  <div class="modal-overlay hidden" id="confirm-modal">
+    <div class="modal glass-card">
+      <div class="modal-header">
+        <h3>⚠️ Confirm Kill Process</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to kill this process?</p>
+        <div class="modal-detail">
+          <span class="detail-label">Process:</span>
+          <span class="detail-value" id="modal-process-name">-</span>
+        </div>
+        <div class="modal-detail">
+          <span class="detail-label">PID:</span>
+          <span class="detail-value" id="modal-pid">-</span>
+        </div>
+        <div class="modal-detail">
+          <span class="detail-label">Port:</span>
+          <span class="detail-value" id="modal-port">-</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
+        <button class="modal-btn danger" id="modal-confirm">Kill Process</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
