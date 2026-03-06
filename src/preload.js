@@ -10,7 +10,7 @@ contextBridge.exposeInMainWorld('portPolice', {
   launchProject: (data) => ipcRenderer.invoke('launch-project', data),
   stopProject: (id) => ipcRenderer.invoke('stop-project', id),
   getRunningProjects: () => ipcRenderer.invoke('get-running-projects'),
-  onProjectStopped: (cb) => ipcRenderer.on('project-stopped', (e, id, code) => cb(id, code)),
+  onProjectStopped: (cb) => ipcRenderer.on('project-stopped', (e, id, code, errMsg) => cb(id, code, errMsg)),
   onProjectError: (cb) => ipcRenderer.on('project-error', (e, id, msg) => cb(id, msg)),
 
   // Window controls

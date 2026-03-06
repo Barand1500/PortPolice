@@ -123,15 +123,23 @@ ipcMain.handle('launch-project', async (event, { folder, port, command }) => {
     // Validate folder path (basic traversal prevention)
     const resolvedFolder = path.resolve(folder);
 
-    // Parse command into parts for safe spawning
+    // Parse command to validate the base command
     const parts = command.split(/\s+/);
     const cmd = parts[0];
-    const args = parts.slice(1);
 
     // Whitelist allowed commands
     const allowedCommands = ['npm', 'npx', 'yarn', 'pnpm', 'node', 'python', 'py', 'pip'];
     if (!allowedCommands.includes(cmd.toLowerCase())) {
       return { success: false, error: `Command "${cmd}" is not allowed. Allowed: ${allowedCommands.join(', ')}` };
+    }
+
+    // Check if package.json exists for npm/yarn/pnpm projects
+    const fs = require('fs');
+    if (['npm', 'yarn', 'pnpm'].includes(cmd.toLowerCase())) {
+      const pkgPath = path.join(resolvedFolder, 'package.json');
+      if (!fs.existsSync(pkgPath)) {
+        return { success: false, error: 'No package.json found in the selected folder. Make sure you selected the right project folder.' };
+      }
     }
 
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -141,12 +149,32 @@ ipcMain.handle('launch-project', async (event, { folder, port, command }) => {
       env.PORT = String(parseInt(port));
     }
 
-    const child = spawn(cmd, args, {
+    // On Windows, use cmd.exe /c to properly run npm/npx/yarn commands
+    // This ensures .cmd extensions are resolved and the process stays alive
+    const child = spawn('cmd.exe', ['/c', command], {
       cwd: resolvedFolder,
       env,
-      shell: true,
-      windowsHide: true,
-      stdio: ['pipe', 'pipe', 'pipe']
+      shell: false,
+      windowsHide: false,
+      stdio: ['pipe', 'pipe', 'pipe'],
+      detached: true
+    });
+
+    // Collect output logs for debugging
+    let outputLog = '';
+    let errorLog = '';
+
+    child.stdout.on('data', (data) => {
+      const text = data.toString();
+      outputLog += text;
+      // Keep only last 2000 chars
+      if (outputLog.length > 2000) outputLog = outputLog.slice(-2000);
+    });
+
+    child.stderr.on('data', (data) => {
+      const text = data.toString();
+      errorLog += text;
+      if (errorLog.length > 2000) errorLog = errorLog.slice(-2000);
     });
 
     const projectInfo = {
@@ -165,10 +193,13 @@ ipcMain.handle('launch-project', async (event, { folder, port, command }) => {
       if (proj) {
         proj.status = 'stopped';
         proj.exitCode = code;
+        proj.outputLog = outputLog;
+        proj.errorLog = errorLog;
       }
-      // Notify renderer
+      // Notify renderer with exit details
       if (mainWindow && !mainWindow.isDestroyed()) {
-        mainWindow.webContents.send('project-stopped', id, code);
+        const errMsg = code !== 0 ? (errorLog.trim().split('\n').pop() || `Exit code: ${code}`) : null;
+        mainWindow.webContents.send('project-stopped', id, code, errMsg);
       }
     });
 
@@ -183,7 +214,7 @@ ipcMain.handle('launch-project', async (event, { folder, port, command }) => {
       }
     });
 
-    runningProjects.set(id, { ...projectInfo, process: child });
+    runningProjects.set(id, { ...projectInfo, process: child, outputLog: '', errorLog: '' });
 
     return { success: true, data: projectInfo };
   } catch (err) {

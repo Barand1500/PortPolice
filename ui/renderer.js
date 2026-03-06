@@ -689,8 +689,14 @@ function initQuickLaunch() {
   });
 
   // Listen for project stopped events from main process
-  window.portPolice.onProjectStopped((id, code) => {
-    showToast('info', `Project stopped (exit code: ${code})`);
+  window.portPolice.onProjectStopped((id, code, errMsg) => {
+    if (code !== 0 && errMsg) {
+      showToast('error', `Project exited (code ${code}): ${errMsg}`);
+    } else if (code !== 0) {
+      showToast('warning', `Project exited with code ${code}`);
+    } else {
+      showToast('info', 'Project stopped');
+    }
     refreshRunningProjects();
     setTimeout(() => refreshPorts(), 1000);
   });
