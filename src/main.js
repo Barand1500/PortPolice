@@ -133,25 +133,40 @@ ipcMain.handle('launch-project', async (event, { folder, port, command }) => {
       return { success: false, error: `Command "${cmd}" is not allowed. Allowed: ${allowedCommands.join(', ')}` };
     }
 
-    // Check if package.json exists for npm/yarn/pnpm projects
+    // Check if package.json exists for npm/yarn/pnpm projects (warning only)
     const fs = require('fs');
+    let hasPackageJson = true;
     if (['npm', 'yarn', 'pnpm'].includes(cmd.toLowerCase())) {
       const pkgPath = path.join(resolvedFolder, 'package.json');
-      if (!fs.existsSync(pkgPath)) {
-        return { success: false, error: 'No package.json found in the selected folder. Make sure you selected the right project folder.' };
-      }
+      hasPackageJson = fs.existsSync(pkgPath);
     }
 
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
     const env = { ...process.env };
-    if (port) {
-      env.PORT = String(parseInt(port));
+    const safePort = port ? parseInt(port) : null;
+
+    // Build the actual command with port injection
+    let finalCommand = command;
+    if (safePort) {
+      env.PORT = String(safePort);
+      // Inject port flag based on command type for frameworks that ignore PORT env
+      if (command.includes('vite') || command === 'npm run dev' || command === 'yarn dev' || command === 'pnpm dev') {
+        // Vite-based: add --port flag
+        if (!command.includes('--port')) {
+          finalCommand = `${command} -- --port ${safePort}`;
+        }
+      } else if (command.includes('next')) {
+        // Next.js: add -p flag
+        if (!command.includes('-p ')) {
+          finalCommand = `${command} -p ${safePort}`;
+        }
+      }
     }
 
     // On Windows, use cmd.exe /c to properly run npm/npx/yarn commands
     // This ensures .cmd extensions are resolved and the process stays alive
-    const child = spawn('cmd.exe', ['/c', command], {
+    const child = spawn('cmd.exe', ['/c', finalCommand], {
       cwd: resolvedFolder,
       env,
       shell: false,
@@ -182,10 +197,11 @@ ipcMain.handle('launch-project', async (event, { folder, port, command }) => {
       pid: child.pid,
       folder: resolvedFolder,
       folderName: path.basename(resolvedFolder),
-      port: port ? parseInt(port) : null,
-      command,
+      port: safePort,
+      command: finalCommand,
       startTime: new Date().toLocaleTimeString(),
-      status: 'running'
+      status: 'running',
+      hasPackageJson
     };
 
     child.on('exit', (code) => {

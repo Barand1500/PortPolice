@@ -670,7 +670,11 @@ function initQuickLaunch() {
       const result = await window.portPolice.launchProject({ folder, port, command });
       
       if (result.success) {
-        showToast('success', `Started "${result.data.folderName}" on ${port ? 'port ' + port : 'default port'}`);
+        const portLabel = port ? 'port ' + port : 'default port';
+        showToast('success', `Started "${result.data.folderName}" on ${portLabel}`);
+        if (result.data.hasPackageJson === false) {
+          showToast('warning', 'No package.json found — the command may fail if dependencies are missing.');
+        }
         saveRecentProject({ folder, port, command, folderName: result.data.folderName });
         refreshRunningProjects();
         renderRecentProjects();
@@ -784,14 +788,17 @@ function renderRecentProjects() {
   }
 
   list.innerHTML = recents.map((r, i) => `
-    <button class="ql-recent-btn" data-recent-idx="${i}">
-      <span class="ql-recent-icon">📁</span>
-      <div class="ql-recent-info">
-        <div class="ql-recent-name">${escapeHtml(r.folderName || r.folder.split('\\').pop())}</div>
-        <div class="ql-recent-path" title="${escapeHtml(r.folder)}">${escapeHtml(r.folder)}</div>
-      </div>
-      <span class="ql-recent-cmd">${escapeHtml(r.command)}</span>
-    </button>
+    <div class="ql-recent-item">
+      <button class="ql-recent-btn" data-recent-idx="${i}">
+        <span class="ql-recent-icon">📁</span>
+        <div class="ql-recent-info">
+          <div class="ql-recent-name">${escapeHtml(r.folderName || r.folder.split('\\').pop())}</div>
+          <div class="ql-recent-path" title="${escapeHtml(r.folder)}">${escapeHtml(r.folder)}</div>
+        </div>
+        <span class="ql-recent-cmd">${escapeHtml(r.command)}</span>
+      </button>
+      <button class="ql-recent-delete" data-delete-idx="${i}" title="Remove">✕</button>
+    </div>
   `).join('');
 
   // Click to fill form
@@ -815,6 +822,19 @@ function renderRecentProjects() {
           customInput.value = recent.command;
         }
       }
+    });
+  });
+
+  // Delete recent project
+  list.querySelectorAll('.ql-recent-delete').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.deleteIdx);
+      let recs = getRecentProjects();
+      recs.splice(idx, 1);
+      localStorage.setItem(RECENT_PROJECTS_KEY, JSON.stringify(recs));
+      renderRecentProjects();
+      showToast('info', 'Removed from recent list');
     });
   });
 }
