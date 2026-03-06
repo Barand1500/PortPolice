@@ -1,6 +1,6 @@
 {
   "name": "portpolice",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A modern desktop port manager application - Monitor, manage and kill active ports",
   "main": "src/main.js",
   "scripts": {

@@ -13,7 +13,11 @@
     <div class="titlebar-left">
       <div class="app-icon">🚔</div>
       <span class="app-title">PortPolice</span>
-      <span class="app-version">v1.0</span>
+      <span class="app-version">v2.0</span>
+      <div class="lang-switcher">
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="tr">TR</button>
+      </div>
     </div>
     <div class="titlebar-controls">
       <button class="tb-btn minimize" id="btn-minimize" title="Minimize">
@@ -34,11 +38,11 @@
     <!-- ─── Sidebar ─── -->
     <aside class="sidebar">
       <div class="sidebar-section">
-        <h3>Dashboard</h3>
+        <h3 data-i18n="dashboard">Dashboard</h3>
         <div class="stat-cards">
           <div class="stat-card">
             <div class="stat-number" id="total-ports">0</div>
-            <div class="stat-label">Active Ports</div>
+            <div class="stat-label" data-i18n="activePorts">Active Ports</div>
           </div>
           <div class="stat-card accent">
             <div class="stat-number" id="total-tcp">0</div>
@@ -50,28 +54,28 @@
           </div>
           <div class="stat-card warning">
             <div class="stat-number" id="total-listening">0</div>
-            <div class="stat-label">Listening</div>
+            <div class="stat-label" data-i18n="listening">Listening</div>
           </div>
         </div>
       </div>
 
       <div class="sidebar-section">
-        <h3>Quick Filters</h3>
+        <h3 data-i18n="quickFilters">Quick Filters</h3>
         <div class="filter-buttons">
-          <button class="filter-btn active" data-filter="all">All Ports</button>
-          <button class="filter-btn" data-filter="tcp">TCP Only</button>
-          <button class="filter-btn" data-filter="udp">UDP Only</button>
-          <button class="filter-btn" data-filter="listening">Listening</button>
-          <button class="filter-btn" data-filter="established">Established</button>
+          <button class="filter-btn active" data-filter="all" data-i18n="allPorts">All Ports</button>
+          <button class="filter-btn" data-filter="tcp" data-i18n="tcpOnly">TCP Only</button>
+          <button class="filter-btn" data-filter="udp" data-i18n="udpOnly">UDP Only</button>
+          <button class="filter-btn" data-filter="listening" data-i18n="listening">Listening</button>
+          <button class="filter-btn" data-filter="established" data-i18n="established">Established</button>
         </div>
       </div>
 
       <div class="sidebar-section">
-        <h3>Browser Filter</h3>
+        <h3 data-i18n="browserFilter">Browser Filter</h3>
         <div class="browser-filter-list" id="browser-filter-list">
           <button class="browser-filter-btn active" data-browser="all">
             <span class="browser-icon">🌍</span>
-            <span class="browser-name">All Browsers</span>
+            <span class="browser-name" data-i18n="allBrowsers">All Browsers</span>
             <span class="browser-count" id="count-all-browsers">0</span>
           </button>
           <button class="browser-filter-btn" data-browser="chrome.exe">
@@ -113,7 +117,7 @@
       </div>
 
       <div class="sidebar-section">
-        <h3>Auto Refresh</h3>
+        <h3 data-i18n="autoRefresh">Auto Refresh</h3>
         <div class="refresh-control">
           <label class="toggle-switch">
             <input type="checkbox" id="auto-refresh-toggle">
@@ -127,6 +131,85 @@
           </select>
         </div>
       </div>
+
+      <!-- System Monitor -->
+      <div class="sidebar-section">
+        <h3 data-i18n="systemMonitor">System Monitor</h3>
+        <div class="sys-monitor">
+          <div class="sys-monitor-item">
+            <div class="sys-bar-header">
+              <span class="sys-label">CPU</span>
+              <span class="sys-value" id="sys-cpu">0%</span>
+            </div>
+            <div class="sys-bar-track">
+              <div class="sys-bar-fill cpu-bar" id="sys-cpu-bar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="sys-monitor-item">
+            <div class="sys-bar-header">
+              <span class="sys-label">RAM</span>
+              <span class="sys-value" id="sys-ram">0%</span>
+            </div>
+            <div class="sys-bar-track">
+              <div class="sys-bar-fill ram-bar" id="sys-ram-bar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="sys-detail-row">
+            <span class="sys-detail-label" data-i18n="ramUsed">RAM Used</span>
+            <span class="sys-detail-value" id="sys-ram-used">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Uptime -->
+      <div class="sidebar-section">
+        <h3 data-i18n="uptime">Uptime</h3>
+        <div class="uptime-display" id="uptime-display">-</div>
+      </div>
+
+      <!-- Network Interfaces -->
+      <div class="sidebar-section">
+        <h3 data-i18n="network">Network</h3>
+        <div class="net-info-list" id="net-info-list">
+          <div class="net-info-item" data-i18n="loading">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Quick Port Check -->
+      <div class="sidebar-section">
+        <h3 data-i18n="quickPortCheck">Quick Port Check</h3>
+        <div class="quick-check">
+          <input type="number" id="quick-port-input" class="ql-input" data-i18n-placeholder="portPlaceholder" placeholder="Port #" min="1" max="65535">
+          <button class="quick-check-btn" id="quick-check-btn" data-i18n="check">Check</button>
+        </div>
+        <div class="quick-check-result hidden" id="quick-check-result"></div>
+      </div>
+
+      <!-- Watchlist -->
+      <div class="sidebar-section">
+        <h3 data-i18n="watchlist">Watchlist</h3>
+        <div class="watchlist-container" id="watchlist-container">
+          <div class="watchlist-empty" data-i18n="noPortsWatched">No ports watched</div>
+        </div>
+      </div>
+
+      <!-- Threshold Alerts -->
+      <div class="sidebar-section">
+        <h3 data-i18n="thresholdAlerts">Threshold Alerts</h3>
+        <div class="threshold-controls">
+          <div class="threshold-row">
+            <span class="threshold-label">CPU ≥</span>
+            <input type="number" id="threshold-cpu" class="threshold-input" value="90" min="10" max="100">
+            <span class="threshold-unit">%</span>
+          </div>
+          <div class="threshold-row">
+            <span class="threshold-label">RAM ≥</span>
+            <input type="number" id="threshold-ram" class="threshold-input" value="90" min="10" max="100">
+            <span class="threshold-unit">%</span>
+          </div>
+          <button class="threshold-save-btn" id="threshold-save-btn" data-i18n="save">Save</button>
+        </div>
+      </div>
     </aside>
 
     <!-- ─── Content Area ─── -->
@@ -137,25 +220,59 @@
           <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
-          <input type="text" id="search-input" placeholder="Search by port, PID, or process name..." autocomplete="off">
+          <input type="text" id="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Search by port, PID, or process name..." autocomplete="off">
           <kbd class="search-kbd">Ctrl+F</kbd>
         </div>
         <div class="top-actions">
-          <button class="action-btn launch" id="btn-quick-launch" title="Quick Launch">
+          <!-- Port Range -->
+          <button class="action-btn range" id="btn-port-range" data-i18n-title="portRangeScan" title="Port Range Scan">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="12" x2="20" y2="12"/><circle cx="7" cy="12" r="3"/><circle cx="17" cy="12" r="3"/>
+            </svg>
+            <span data-i18n="range">Range</span>
+          </button>
+          <!-- Remote Scan -->
+          <button class="action-btn remote" id="btn-remote-scan" data-i18n-title="remoteHostScan" title="Remote Host Scan">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <span data-i18n="remote">Remote</span>
+          </button>
+          <!-- Port Forwarding -->
+          <button class="action-btn forward" id="btn-port-forward" data-i18n-title="portForwarding" title="Port Forwarding">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 3 21 3 21 9"/><path d="M21 3l-7 7"/><polyline points="9 21 3 21 3 15"/><path d="M3 21l7-7"/>
+            </svg>
+            <span data-i18n="forward">Forward</span>
+          </button>
+          <!-- Export -->
+          <div class="export-dropdown">
+            <button class="action-btn export" id="btn-export" data-i18n-title="exportData" title="Export Data">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span data-i18n="export">Export</span>
+            </button>
+            <div class="export-menu hidden" id="export-menu">
+              <button class="export-option" data-format="csv" data-i18n="exportCsv">📄 Export CSV</button>
+              <button class="export-option" data-format="json" data-i18n="exportJson">📋 Export JSON</button>
+            </div>
+          </div>
+          <button class="action-btn launch" id="btn-quick-launch" data-i18n-title="quickLaunch" title="Quick Launch">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
-            <span>Quick Launch</span>
+            <span data-i18n="launch">Launch</span>
           </button>
-          <button class="action-btn refresh" id="btn-refresh" title="Refresh">
+          <button class="action-btn refresh" id="btn-refresh" title="Refresh (Ctrl+R)">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
               <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
             </svg>
-            <span>Refresh</span>
+            <span data-i18n="refresh">Refresh</span>
           </button>
           <div class="port-count">
-            <span id="visible-count">0</span> shown
+            <span id="visible-count">0</span> / <span id="total-count">0</span> shown
           </div>
         </div>
       </div>
@@ -164,16 +281,16 @@
       <div class="content-split">
         <!-- ─── Table ─── -->
         <div class="table-wrapper">
-          <table class="port-table">
+          <table class="port-table" id="port-table">
             <thead>
-              <tr>
-                <th class="sortable" data-sort="proto">Protocol <span class="sort-arrow">↕</span></th>
-                <th class="sortable" data-sort="port">Port <span class="sort-arrow">↕</span></th>
-                <th>Address</th>
-                <th class="sortable" data-sort="pid">PID <span class="sort-arrow">↕</span></th>
-                <th class="sortable" data-sort="processName">Process <span class="sort-arrow">↕</span></th>
-                <th class="sortable" data-sort="state">Status <span class="sort-arrow">↕</span></th>
-                <th>Actions</th>
+              <tr id="table-header-row">
+                <th class="sortable draggable-col" data-sort="proto" data-col="proto" draggable="true"><span data-i18n="protocol">Protocol</span> <span class="sort-arrow">↕</span></th>
+                <th class="sortable draggable-col" data-sort="port" data-col="port" draggable="true"><span data-i18n="port">Port</span> <span class="sort-arrow">↕</span></th>
+                <th class="draggable-col" data-col="address" draggable="true"><span data-i18n="address">Address</span></th>
+                <th class="sortable draggable-col" data-sort="pid" data-col="pid" draggable="true"><span data-i18n="pid">PID</span> <span class="sort-arrow">↕</span></th>
+                <th class="sortable draggable-col" data-sort="processName" data-col="process" draggable="true"><span data-i18n="process">Process</span> <span class="sort-arrow">↕</span></th>
+                <th class="sortable draggable-col" data-sort="state" data-col="state" draggable="true"><span data-i18n="status">Status</span> <span class="sort-arrow">↕</span></th>
+                <th data-col="actions"><span data-i18n="actions">Actions</span></th>
               </tr>
             </thead>
             <tbody id="port-table-body">
@@ -183,13 +300,37 @@
           <!-- ─── Loading State ─── -->
           <div class="loading-state" id="loading-state">
             <div class="spinner"></div>
-            <p>Scanning ports...</p>
+            <p data-i18n="scanningPorts">Scanning ports...</p>
           </div>
 
           <!-- ─── Empty State ─── -->
           <div class="empty-state hidden" id="empty-state">
             <div class="empty-icon">🔍</div>
-            <p>No ports found matching your criteria</p>
+            <p data-i18n="noPortsFound">No ports found matching your criteria</p>
+          </div>
+
+          <!-- ─── Pagination ─── -->
+          <div class="pagination-bar" id="pagination-bar">
+            <div class="pagination-info">
+              Page <span id="page-current">1</span> of <span id="page-total">1</span>
+              (<span id="page-item-count">0</span> items)
+            </div>
+            <div class="pagination-controls">
+              <button class="page-btn" id="page-first" title="First">«</button>
+              <button class="page-btn" id="page-prev" title="Previous">‹</button>
+              <div class="page-numbers" id="page-numbers"></div>
+              <button class="page-btn" id="page-next" title="Next">›</button>
+              <button class="page-btn" id="page-last" title="Last">»</button>
+            </div>
+            <div class="page-size-control">
+              <select id="page-size" class="select-mini">
+                <option value="25">25</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+                <option value="0">All</option>
+              </select>
+              <span class="page-size-label" data-i18n="perPage">per page</span>
+            </div>
           </div>
         </div>
 
@@ -198,14 +339,14 @@
           <div class="detail-panel-header">
             <h3>
               <span id="detail-icon">📦</span>
-              <span id="detail-title">Process Details</span>
+              <span id="detail-title" data-i18n="processDetails">Process Details</span>
             </h3>
             <button class="detail-close-btn" id="detail-close" title="Close">✕</button>
           </div>
           <div class="detail-panel-body" id="detail-body">
             <div class="detail-loading">
               <div class="spinner"></div>
-              <p>Loading details...</p>
+              <p data-i18n="loadingDetails">Loading details...</p>
             </div>
           </div>
         </div>
@@ -219,60 +360,71 @@
   <!-- ─── Quick Launch Modal ─── -->
   <div class="modal-overlay hidden" id="quick-launch-modal">
     <div class="modal glass-card ql-modal">
-      <div class="modal-header">
-        <h3>🚀 Quick Launch</h3>
-        <button class="detail-close-btn" id="ql-close">✕</button>
+      <!-- Header -->
+      <div class="ql-header">
+        <div class="ql-header-left">
+          <button class="ql-back-btn hidden" id="ql-back" title="Back">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h3 class="ql-title" id="ql-title" data-i18n="quickLaunchTitle">🚀 Quick Launch</h3>
+        </div>
+        <div class="ql-header-right">
+          <button class="ql-new-btn" id="ql-new-profile">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span data-i18n="newProfile">New Profile</span>
+          </button>
+          <button class="detail-close-btn" id="ql-close">✕</button>
+        </div>
       </div>
-      <div class="modal-body">
-        <!-- Project folder -->
-        <div class="ql-field">
-          <label class="ql-label">Project Folder</label>
-          <div class="ql-folder-row">
-            <input type="text" id="ql-folder" class="ql-input" placeholder="Select project folder..." readonly>
-            <button class="ql-browse-btn" id="ql-browse">Browse</button>
-          </div>
+
+      <!-- View: Profile List -->
+      <div class="ql-view" id="ql-view-list">
+        <div class="ql-profiles-grid" id="ql-profiles-grid"></div>
+        <div class="ql-empty-state hidden" id="ql-empty-state">
+          <div class="ql-empty-icon">📂</div>
+          <p class="ql-empty-title" data-i18n="noProfilesYet">No workspace profiles yet</p>
+          <p class="ql-empty-hint" data-i18n="createProfileHint">Create a profile to launch multiple services at once</p>
         </div>
-
-        <!-- Port -->
-        <div class="ql-field">
-          <label class="ql-label">Port (optional)</label>
-          <input type="number" id="ql-port" class="ql-input" placeholder="e.g. 3000, 5173" min="1" max="65535">
-        </div>
-
-        <!-- Start command -->
-        <div class="ql-field">
-          <label class="ql-label">Start Command</label>
-          <div class="ql-command-row">
-            <select id="ql-command-preset" class="ql-select">
-              <option value="npm start">npm start</option>
-              <option value="npm run dev">npm run dev</option>
-              <option value="yarn start">yarn start</option>
-              <option value="yarn dev">yarn dev</option>
-              <option value="pnpm start">pnpm start</option>
-              <option value="pnpm dev">pnpm dev</option>
-              <option value="npx vite">npx vite</option>
-              <option value="npx next dev">npx next dev</option>
-              <option value="custom">Custom...</option>
-            </select>
-            <input type="text" id="ql-command-custom" class="ql-input hidden" placeholder="Enter custom command...">
-          </div>
-        </div>
-
-        <!-- Start button -->
-        <button class="ql-start-btn" id="ql-start">▶ Start Project</button>
-
-        <!-- Running projects -->
-        <div class="ql-running-section" id="ql-running-section">
-          <div class="ql-section-title">Running Projects</div>
+        <div class="ql-section" id="ql-running-section">
+          <div class="ql-section-divider" data-i18n="runningServices">Running Services</div>
           <div id="ql-running-list" class="ql-running-list">
-            <div class="ql-empty">No running projects</div>
+            <div class="ql-empty-text" data-i18n="noRunningServices">No running services</div>
           </div>
         </div>
+      </div>
 
-        <!-- Recent projects -->
-        <div class="ql-recent-section" id="ql-recent-section">
-          <div class="ql-section-title">Recent Projects</div>
-          <div id="ql-recent-list" class="ql-recent-list"></div>
+      <!-- View: Profile Editor -->
+      <div class="ql-view hidden" id="ql-view-editor">
+        <div class="ql-editor">
+          <div class="ql-field">
+            <label class="ql-label" data-i18n="profileName">Profile Name</label>
+            <input type="text" id="ql-profile-name" class="ql-input" placeholder="e.g. My Full-Stack App" maxlength="40" autocomplete="off">
+          </div>
+          <div class="ql-field">
+            <label class="ql-label" data-i18n="icon">Icon</label>
+            <div class="ql-icon-grid" id="ql-icon-picker">
+              <button type="button" class="ql-icon-opt selected" data-icon="🚀">🚀</button>
+              <button type="button" class="ql-icon-opt" data-icon="🌐">🌐</button>
+              <button type="button" class="ql-icon-opt" data-icon="🛒">🛒</button>
+              <button type="button" class="ql-icon-opt" data-icon="📱">📱</button>
+              <button type="button" class="ql-icon-opt" data-icon="🎮">🎮</button>
+              <button type="button" class="ql-icon-opt" data-icon="💼">💼</button>
+              <button type="button" class="ql-icon-opt" data-icon="📊">📊</button>
+              <button type="button" class="ql-icon-opt" data-icon="🎨">🎨</button>
+              <button type="button" class="ql-icon-opt" data-icon="🔧">🔧</button>
+              <button type="button" class="ql-icon-opt" data-icon="📦">📦</button>
+              <button type="button" class="ql-icon-opt" data-icon="🏢">🏢</button>
+              <button type="button" class="ql-icon-opt" data-icon="⚡">⚡</button>
+            </div>
+          </div>
+          <div class="ql-field ql-services-field">
+            <div class="ql-services-hdr">
+              <label class="ql-label" style="margin-bottom:0" data-i18n="services">Services</label>
+              <button type="button" class="ql-add-svc-btn" id="ql-add-service" data-i18n="addService">+ Add Service</button>
+            </div>
+            <div class="ql-services-list" id="ql-services-list"></div>
+          </div>
+          <button type="button" class="ql-save-btn" id="ql-save-profile" data-i18n="saveProfile">💾 Save Profile</button>
         </div>
       </div>
     </div>
@@ -282,30 +434,197 @@
   <div class="modal-overlay hidden" id="confirm-modal">
     <div class="modal glass-card">
       <div class="modal-header">
-        <h3>⚠️ Confirm Kill Process</h3>
+        <h3 data-i18n="confirmKillProcess">⚠️ Confirm Kill Process</h3>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to kill this process?</p>
+        <p data-i18n="killConfirmMsg">Are you sure you want to kill this process?</p>
         <div class="modal-detail">
-          <span class="detail-label">Process:</span>
+          <span class="detail-label" data-i18n="processLabel">Process:</span>
           <span class="detail-value" id="modal-process-name">-</span>
         </div>
         <div class="modal-detail">
-          <span class="detail-label">PID:</span>
+          <span class="detail-label" data-i18n="pidModalLabel">PID:</span>
           <span class="detail-value" id="modal-pid">-</span>
         </div>
         <div class="modal-detail">
-          <span class="detail-label">Port:</span>
+          <span class="detail-label" data-i18n="portModalLabel">Port:</span>
           <span class="detail-value" id="modal-port">-</span>
         </div>
       </div>
       <div class="modal-actions">
-        <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
-        <button class="modal-btn danger" id="modal-confirm">Kill Process</button>
+        <button class="modal-btn cancel" id="modal-cancel" data-i18n="cancel">Cancel</button>
+        <button class="modal-btn danger" id="modal-confirm" data-i18n="killProcess">Kill Process</button>
       </div>
     </div>
   </div>
 
+  <!-- ─── Port Range Modal ─── -->
+  <div class="modal-overlay hidden" id="port-range-modal">
+    <div class="modal glass-card" style="width:420px">
+      <div class="modal-header"><h3 data-i18n="portRangeScanTitle">🔍 Port Range Scan</h3></div>
+      <div class="modal-body">
+        <p data-i18n="portRangeScanDesc">Scan ports within a specific range on localhost</p>
+        <div class="range-inputs">
+          <div class="range-field">
+            <label class="ql-label" data-i18n="startPort">Start Port</label>
+            <input type="number" id="range-start" class="ql-input" placeholder="1" min="1" max="65535" value="1">
+          </div>
+          <span class="range-dash">—</span>
+          <div class="range-field">
+            <label class="ql-label" data-i18n="endPort">End Port</label>
+            <input type="number" id="range-end" class="ql-input" placeholder="1024" min="1" max="65535" value="1024">
+          </div>
+        </div>
+        <div class="range-result hidden" id="range-result">
+          <div class="range-result-header">
+            <span id="range-result-count">0</span> <span data-i18n="portsFound">ports found</span>
+          </div>
+          <div class="range-result-list" id="range-result-list"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="range-cancel" data-i18n="close">Close</button>
+        <button class="modal-btn danger" id="range-scan" style="background:rgba(108,92,231,0.15);border-color:var(--accent);color:var(--accent-light)">🔍 <span data-i18n="scan">Scan</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Remote Host Scan Modal ─── -->
+  <div class="modal-overlay hidden" id="remote-scan-modal">
+    <div class="modal glass-card" style="width:480px">
+      <div class="modal-header"><h3 data-i18n="remoteHostScanTitle">🌐 Remote Host Port Scan</h3></div>
+      <div class="modal-body">
+        <p data-i18n="remoteHostScanDesc">Scan ports on a remote host (TCP connect scan)</p>
+        <div class="ql-field">
+          <label class="ql-label" data-i18n="hostIp">Host / IP</label>
+          <input type="text" id="remote-host" class="ql-input" placeholder="e.g. 192.168.1.1 or example.com" autocomplete="off">
+        </div>
+        <div class="range-inputs" style="margin-top:12px">
+          <div class="range-field">
+            <label class="ql-label" data-i18n="startPort">Start Port</label>
+            <input type="number" id="remote-start" class="ql-input" placeholder="1" min="1" max="65535" value="1">
+          </div>
+          <span class="range-dash">—</span>
+          <div class="range-field">
+            <label class="ql-label" data-i18n="endPort">End Port</label>
+            <input type="number" id="remote-end" class="ql-input" placeholder="1024" min="1" max="65535" value="1024">
+          </div>
+        </div>
+        <div class="remote-result hidden" id="remote-result">
+          <div class="range-result-header">
+            <span id="remote-result-count">0</span> <span data-i18n="openPortsOn">open ports on</span> <span id="remote-result-host"></span>
+          </div>
+          <div class="range-result-list" id="remote-result-list"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="remote-cancel" data-i18n="close">Close</button>
+        <button class="modal-btn danger" id="remote-scan-btn" style="background:rgba(0,206,201,0.15);border-color:var(--success);color:var(--success)">🌐 <span data-i18n="scan">Scan</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Port Forwarding Modal ─── -->
+  <div class="modal-overlay hidden" id="port-forward-modal">
+    <div class="modal glass-card" style="width:460px">
+      <div class="modal-header"><h3 data-i18n="portForwardingTitle">🔀 Port Forwarding</h3></div>
+      <div class="modal-body">
+        <p data-i18n="portForwardingDesc">Manage port forwarding rules (requires Administrator)</p>
+        <div class="pf-form">
+          <div class="range-inputs" style="margin-bottom:8px">
+            <div class="range-field">
+              <label class="ql-label" data-i18n="listenPort">Listen Port</label>
+              <input type="number" id="pf-listen-port" class="ql-input" placeholder="8080" min="1" max="65535">
+            </div>
+            <span class="range-dash">→</span>
+            <div class="range-field" style="flex:2">
+              <label class="ql-label" data-i18n="connectAddress">Connect Address</label>
+              <input type="text" id="pf-connect-addr" class="ql-input" placeholder="127.0.0.1" autocomplete="off">
+            </div>
+            <div class="range-field">
+              <label class="ql-label" data-i18n="connectPort">Connect Port</label>
+              <input type="number" id="pf-connect-port" class="ql-input" placeholder="3000" min="1" max="65535">
+            </div>
+          </div>
+          <button class="modal-btn danger" id="pf-add-btn" style="width:100%;background:rgba(108,92,231,0.15);border-color:var(--accent);color:var(--accent-light)" data-i18n="addRule">+ Add Rule</button>
+        </div>
+        <div class="pf-rules-section" style="margin-top:16px">
+          <div class="ql-label" data-i18n="activeRules">Active Rules</div>
+          <div class="pf-rules-list" id="pf-rules-list">
+            <div class="ql-empty-text" data-i18n="noForwardingRules">No forwarding rules</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="pf-close" data-i18n="close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Known Port Info Modal ─── -->
+  <div class="modal-overlay hidden" id="known-port-modal">
+    <div class="modal glass-card" style="width:400px">
+      <div class="modal-header"><h3 data-i18n="portInfo">📖 Port Info</h3></div>
+      <div class="modal-body" id="known-port-body">
+        <p data-i18n="loading">Loading...</p>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="known-port-close" data-i18n="close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Keyboard Shortcuts Modal ─── -->
+  <div class="modal-overlay hidden" id="shortcuts-modal">
+    <div class="modal glass-card" style="width:440px">
+      <div class="modal-header"><h3 data-i18n="keyboardShortcuts">⌨️ Keyboard Shortcuts</h3></div>
+      <div class="modal-body">
+        <div class="shortcut-list">
+          <div class="shortcut-item"><kbd>Ctrl+F</kbd><span data-i18n="focusSearch">Focus Search</span></div>
+          <div class="shortcut-item"><kbd>Ctrl+R</kbd><span data-i18n="refreshPorts">Refresh Ports</span></div>
+          <div class="shortcut-item"><kbd>Ctrl+E</kbd><span data-i18n="exportMenu">Export Menu</span></div>
+          <div class="shortcut-item"><kbd>Ctrl+L</kbd><span data-i18n="quickLaunch">Quick Launch</span></div>
+          <div class="shortcut-item"><kbd>Ctrl+P</kbd><span data-i18n="quickPortCheckShort">Quick Port Check</span></div>
+          <div class="shortcut-item"><kbd>Ctrl+Shift+R</kbd><span data-i18n="portRangeScanShort">Port Range Scan</span></div>
+          <div class="shortcut-item"><kbd>Ctrl+Shift+S</kbd><span data-i18n="remoteHostScanShort">Remote Host Scan</span></div>
+          <div class="shortcut-item"><kbd>Escape</kbd><span data-i18n="closeModalClear">Close Modal / Clear</span></div>
+          <div class="shortcut-item"><kbd>?</kbd><span data-i18n="showThisHelp">Show This Help</span></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" id="shortcuts-close" data-i18n="close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Context Menu ─── -->
+  <div class="context-menu hidden" id="context-menu">
+    <button class="ctx-item" data-action="detail" data-i18n="viewDetails">📋 View Details</button>
+    <button class="ctx-item" data-action="info" data-i18n="ctxPortInfo">📖 Port Info</button>
+    <button class="ctx-item" data-action="watchlist" data-i18n="addToWatchlist">👁️ Add to Watchlist</button>
+    <button class="ctx-item" data-action="copy-port" data-i18n="copyPort">📎 Copy Port</button>
+    <button class="ctx-item" data-action="copy-pid" data-i18n="copyPid">📎 Copy PID</button>
+    <button class="ctx-item" data-action="copy-row" data-i18n="copyRow">📎 Copy Row</button>
+    <div class="ctx-divider"></div>
+    <button class="ctx-item danger" data-action="kill" data-i18n="ctxKillProcess">⚡ Kill Process</button>
+  </div>
+
+  <!-- ─── Notification Panel (Port Change) ─── -->
+  <div class="notification-panel hidden" id="notification-panel">
+    <div class="notif-header">
+      <span data-i18n="portChanges">🔔 Port Changes</span>
+      <button class="notif-close" id="notif-close">✕</button>
+    </div>
+    <div class="notif-list" id="notif-list"></div>
+  </div>
+
+  <!-- ─── Notification Bell ─── -->
+  <button class="notif-bell" id="notif-bell" title="Port Change Notifications">
+    🔔
+    <span class="notif-badge hidden" id="notif-badge">0</span>
+  </button>
+
+  <script src="i18n.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>

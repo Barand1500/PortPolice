@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
+  <title>PortPolice</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 420px;
+      height: 320px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      -webkit-app-region: drag;
+    }
+    .splash {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #0a0a1a 0%, #141432 50%, #0a0a1a 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(108, 92, 231, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(108, 92, 231, 0.15);
+      animation: fadeIn 0.5s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    .splash::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(0, 206, 201, 0.06) 0%, transparent 50%);
+      animation: rotateBg 8s linear infinite;
+    }
+    @keyframes rotateBg { to { transform: rotate(360deg); } }
+    .splash-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      animation: bounce 1.5s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 0 20px rgba(108, 92, 231, 0.4));
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .splash-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #a29bfe, #6c5ce7, #00cec9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .splash-sub {
+      font-size: 11px;
+      color: rgba(136, 136, 168, 0.8);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+    }
+    .splash-loader {
+      width: 160px;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+    .splash-loader-bar {
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, #6c5ce7, #00cec9);
+      border-radius: 2px;
+      animation: loadSlide 1.2s ease-in-out infinite;
+    }
+    @keyframes loadSlide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(400%); }
+    }
+    .splash-version {
+      position: absolute;
+      bottom: 16px;
+      font-size: 10px;
+      color: rgba(85, 85, 112, 0.6);
+      letter-spacing: 1px;
+      z-index: 1;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="splash">
+    <div class="splash-icon">🚔</div>
+    <div class="splash-title">PortPolice</div>
+    <div class="splash-sub">Port Manager & Monitor</div>
+    <div class="splash-loader">
+      <div class="splash-loader-bar"></div>
+    </div>
+    <div class="splash-version">v2.0</div>
+  </div>
+</body>
+</html>
