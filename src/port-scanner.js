@@ -9,6 +9,7 @@ const BROWSER_MAP = {
   'opera.exe': { name: 'Opera', icon: '🔴' },
   'brave.exe': { name: 'Brave', icon: '🦁' },
   'vivaldi.exe': { name: 'Vivaldi', icon: '🎵' },
+  'zen.exe': { name: 'Zen Browser', icon: '🧘' },
   'safari.exe': { name: 'Safari', icon: '🧭' },
   'iexplore.exe': { name: 'Internet Explorer', icon: '📘' },
 };

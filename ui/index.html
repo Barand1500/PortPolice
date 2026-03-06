@@ -104,6 +104,11 @@
             <span class="browser-name">Vivaldi</span>
             <span class="browser-count" id="count-vivaldi">0</span>
           </button>
+          <button class="browser-filter-btn" data-browser="zen.exe">
+            <span class="browser-icon">🧘</span>
+            <span class="browser-name">Zen Browser</span>
+            <span class="browser-count" id="count-zen">0</span>
+          </button>
         </div>
       </div>
 
@@ -136,6 +141,12 @@
           <kbd class="search-kbd">Ctrl+F</kbd>
         </div>
         <div class="top-actions">
+          <button class="action-btn launch" id="btn-quick-launch" title="Quick Launch">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Quick Launch</span>
+          </button>
           <button class="action-btn refresh" id="btn-refresh" title="Refresh">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
@@ -204,6 +215,68 @@
 
   <!-- ─── Toast Container ─── -->
   <div class="toast-container" id="toast-container"></div>
+
+  <!-- ─── Quick Launch Modal ─── -->
+  <div class="modal-overlay hidden" id="quick-launch-modal">
+    <div class="modal glass-card ql-modal">
+      <div class="modal-header">
+        <h3>🚀 Quick Launch</h3>
+        <button class="detail-close-btn" id="ql-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Project folder -->
+        <div class="ql-field">
+          <label class="ql-label">Project Folder</label>
+          <div class="ql-folder-row">
+            <input type="text" id="ql-folder" class="ql-input" placeholder="Select project folder..." readonly>
+            <button class="ql-browse-btn" id="ql-browse">Browse</button>
+          </div>
+        </div>
+
+        <!-- Port -->
+        <div class="ql-field">
+          <label class="ql-label">Port (optional)</label>
+          <input type="number" id="ql-port" class="ql-input" placeholder="e.g. 3000, 5173" min="1" max="65535">
+        </div>
+
+        <!-- Start command -->
+        <div class="ql-field">
+          <label class="ql-label">Start Command</label>
+          <div class="ql-command-row">
+            <select id="ql-command-preset" class="ql-select">
+              <option value="npm start">npm start</option>
+              <option value="npm run dev">npm run dev</option>
+              <option value="yarn start">yarn start</option>
+              <option value="yarn dev">yarn dev</option>
+              <option value="pnpm start">pnpm start</option>
+              <option value="pnpm dev">pnpm dev</option>
+              <option value="npx vite">npx vite</option>
+              <option value="npx next dev">npx next dev</option>
+              <option value="custom">Custom...</option>
+            </select>
+            <input type="text" id="ql-command-custom" class="ql-input hidden" placeholder="Enter custom command...">
+          </div>
+        </div>
+
+        <!-- Start button -->
+        <button class="ql-start-btn" id="ql-start">▶ Start Project</button>
+
+        <!-- Running projects -->
+        <div class="ql-running-section" id="ql-running-section">
+          <div class="ql-section-title">Running Projects</div>
+          <div id="ql-running-list" class="ql-running-list">
+            <div class="ql-empty">No running projects</div>
+          </div>
+        </div>
+
+        <!-- Recent projects -->
+        <div class="ql-recent-section" id="ql-recent-section">
+          <div class="ql-section-title">Recent Projects</div>
+          <div id="ql-recent-list" class="ql-recent-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ─── Confirm Modal ─── -->
   <div class="modal-overlay hidden" id="confirm-modal">

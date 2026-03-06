@@ -40,7 +40,10 @@ document.addEventListener('keydown', (e) => {
     searchInput.select();
   }
   if (e.key === 'Escape') {
-    if (!confirmModal.classList.contains('hidden')) {
+    const qlModal = document.getElementById('quick-launch-modal');
+    if (qlModal && !qlModal.classList.contains('hidden')) {
+      qlModal.classList.add('hidden');
+    } else if (!confirmModal.classList.contains('hidden')) {
       hideModal();
     } else if (!detailPanel.classList.contains('hidden')) {
       closeDetailPanel();
@@ -363,6 +366,7 @@ function updateBrowserCounts() {
   el('count-opera').textContent = allPorts.filter(p => p.processName.toLowerCase() === 'opera.exe').length;
   el('count-brave').textContent = allPorts.filter(p => p.processName.toLowerCase() === 'brave.exe').length;
   el('count-vivaldi').textContent = allPorts.filter(p => p.processName.toLowerCase() === 'vivaldi.exe').length;
+  el('count-zen').textContent = allPorts.filter(p => p.processName.toLowerCase() === 'zen.exe').length;
 }
 
 function getFilteredPorts() {
@@ -589,4 +593,222 @@ function showToast(type, message) {
 // ─── Initialize ───
 document.addEventListener('DOMContentLoaded', () => {
   refreshPorts();
+  initQuickLaunch();
 });
+
+// ═══════════════════════════════════════════
+// Quick Launch Module
+// ═══════════════════════════════════════════
+
+const RECENT_PROJECTS_KEY = 'portpolice_recent_projects';
+const MAX_RECENT = 5;
+
+let qlRunningProjects = [];
+
+function initQuickLaunch() {
+  const qlModal = $('#quick-launch-modal');
+  const qlFolder = $('#ql-folder');
+  const qlPort = $('#ql-port');
+  const qlPreset = $('#ql-command-preset');
+  const qlCustom = $('#ql-command-custom');
+
+  // Open modal
+  $('#btn-quick-launch').addEventListener('click', () => {
+    qlModal.classList.remove('hidden');
+    refreshRunningProjects();
+    renderRecentProjects();
+  });
+
+  // Close modal
+  $('#ql-close').addEventListener('click', () => qlModal.classList.add('hidden'));
+  qlModal.addEventListener('click', (e) => {
+    if (e.target === qlModal) qlModal.classList.add('hidden');
+  });
+
+  // Browse folder
+  $('#ql-browse').addEventListener('click', async () => {
+    const folder = await window.portPolice.selectFolder();
+    if (folder) qlFolder.value = folder;
+  });
+
+  // Click on folder input also opens browse
+  qlFolder.addEventListener('click', async () => {
+    const folder = await window.portPolice.selectFolder();
+    if (folder) qlFolder.value = folder;
+  });
+
+  // Show/hide custom command input
+  qlPreset.addEventListener('change', () => {
+    if (qlPreset.value === 'custom') {
+      qlCustom.classList.remove('hidden');
+      qlCustom.focus();
+    } else {
+      qlCustom.classList.add('hidden');
+    }
+  });
+
+  // Start project
+  $('#ql-start').addEventListener('click', async () => {
+    const folder = qlFolder.value.trim();
+    const port = qlPort.value.trim();
+    const command = qlPreset.value === 'custom' ? qlCustom.value.trim() : qlPreset.value;
+
+    if (!folder) {
+      showToast('warning', 'Please select a project folder');
+      return;
+    }
+    if (!command) {
+      showToast('warning', 'Please enter a start command');
+      return;
+    }
+
+    const startBtn = $('#ql-start');
+    startBtn.disabled = true;
+    startBtn.textContent = '⏳ Starting...';
+
+    try {
+      const result = await window.portPolice.launchProject({ folder, port, command });
+      
+      if (result.success) {
+        showToast('success', `Started "${result.data.folderName}" on ${port ? 'port ' + port : 'default port'}`);
+        saveRecentProject({ folder, port, command, folderName: result.data.folderName });
+        refreshRunningProjects();
+        renderRecentProjects();
+        
+        // Refresh port list after a delay to pick up the new process
+        setTimeout(() => refreshPorts(), 2000);
+      } else {
+        showToast('error', `Launch failed: ${result.error}`);
+      }
+    } catch (err) {
+      showToast('error', `Error: ${err.message}`);
+    } finally {
+      startBtn.disabled = false;
+      startBtn.textContent = '▶ Start Project';
+    }
+  });
+
+  // Listen for project stopped events from main process
+  window.portPolice.onProjectStopped((id, code) => {
+    showToast('info', `Project stopped (exit code: ${code})`);
+    refreshRunningProjects();
+    setTimeout(() => refreshPorts(), 1000);
+  });
+
+  window.portPolice.onProjectError((id, msg) => {
+    showToast('error', `Project error: ${msg}`);
+    refreshRunningProjects();
+  });
+}
+
+async function refreshRunningProjects() {
+  try {
+    qlRunningProjects = await window.portPolice.getRunningProjects();
+    renderRunningProjects();
+  } catch {}
+}
+
+function renderRunningProjects() {
+  const list = document.getElementById('ql-running-list');
+  const running = qlRunningProjects.filter(p => p.status === 'running');
+
+  if (running.length === 0) {
+    list.innerHTML = '<div class="ql-empty">No running projects</div>';
+    return;
+  }
+
+  list.innerHTML = running.map(p => `
+    <div class="ql-project-card" data-project-id="${escapeHtml(p.id)}">
+      <div class="ql-project-info">
+        <div class="ql-project-name">📂 ${escapeHtml(p.folderName)}</div>
+        <div class="ql-project-meta">${escapeHtml(p.command)} ${p.port ? '· Port ' + p.port : ''} · ${escapeHtml(p.startTime)}</div>
+      </div>
+      <span class="ql-status-badge running"><span class="ql-status-dot"></span> Running</span>
+      <button class="ql-stop-btn" data-stop-id="${escapeHtml(p.id)}">■ Stop</button>
+    </div>
+  `).join('');
+
+  // Attach stop handlers
+  list.querySelectorAll('.ql-stop-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.stopId;
+      btn.textContent = '⏳...';
+      btn.disabled = true;
+      try {
+        const result = await window.portPolice.stopProject(id);
+        if (result.success) {
+          showToast('success', 'Project stopped');
+          refreshRunningProjects();
+          setTimeout(() => refreshPorts(), 1000);
+        } else {
+          showToast('error', `Stop failed: ${result.error}`);
+        }
+      } catch (err) {
+        showToast('error', `Error: ${err.message}`);
+      }
+    });
+  });
+}
+
+// ─── Recent Projects (localStorage) ───
+
+function getRecentProjects() {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_PROJECTS_KEY) || '[]');
+  } catch { return []; }
+}
+
+function saveRecentProject(project) {
+  let recents = getRecentProjects();
+  // Remove duplicate
+  recents = recents.filter(r => r.folder !== project.folder || r.command !== project.command);
+  recents.unshift(project);
+  if (recents.length > MAX_RECENT) recents = recents.slice(0, MAX_RECENT);
+  localStorage.setItem(RECENT_PROJECTS_KEY, JSON.stringify(recents));
+}
+
+function renderRecentProjects() {
+  const list = document.getElementById('ql-recent-list');
+  const recents = getRecentProjects();
+
+  if (recents.length === 0) {
+    list.innerHTML = '<div class="ql-empty">No recent projects</div>';
+    return;
+  }
+
+  list.innerHTML = recents.map((r, i) => `
+    <button class="ql-recent-btn" data-recent-idx="${i}">
+      <span class="ql-recent-icon">📁</span>
+      <div class="ql-recent-info">
+        <div class="ql-recent-name">${escapeHtml(r.folderName || r.folder.split('\\').pop())}</div>
+        <div class="ql-recent-path" title="${escapeHtml(r.folder)}">${escapeHtml(r.folder)}</div>
+      </div>
+      <span class="ql-recent-cmd">${escapeHtml(r.command)}</span>
+    </button>
+  `).join('');
+
+  // Click to fill form
+  list.querySelectorAll('.ql-recent-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.recentIdx);
+      const recent = recents[idx];
+      if (recent) {
+        document.getElementById('ql-folder').value = recent.folder;
+        document.getElementById('ql-port').value = recent.port || '';
+
+        const preset = document.getElementById('ql-command-preset');
+        const customInput = document.getElementById('ql-command-custom');
+        const matchOption = [...preset.options].find(o => o.value === recent.command);
+        if (matchOption) {
+          preset.value = recent.command;
+          customInput.classList.add('hidden');
+        } else {
+          preset.value = 'custom';
+          customInput.classList.remove('hidden');
+          customInput.value = recent.command;
+        }
+      }
+    });
+  });
+}

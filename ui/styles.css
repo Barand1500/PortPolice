@@ -1054,3 +1054,302 @@ body {
   font-size: 14px;
   margin-right: 2px;
 }
+
+/* ─── Quick Launch Button ─── */
+.action-btn.launch {
+  background: rgba(108, 92, 231, 0.1);
+  border-color: rgba(108, 92, 231, 0.3);
+  color: var(--accent-light);
+}
+.action-btn.launch:hover {
+  background: rgba(108, 92, 231, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* ─── Quick Launch Modal ─── */
+.ql-modal {
+  width: 480px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.ql-modal .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ql-field {
+  margin-bottom: 14px;
+}
+
+.ql-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.ql-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.ql-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+.ql-input::placeholder { color: var(--text-muted); }
+.ql-input[readonly] { cursor: pointer; }
+
+.ql-folder-row {
+  display: flex;
+  gap: 8px;
+}
+.ql-folder-row .ql-input { flex: 1; }
+
+.ql-browse-btn {
+  padding: 9px 16px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ql-browse-btn:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+  border-color: var(--border-glass-hover);
+}
+
+.ql-command-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ql-select {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.ql-select:focus {
+  border-color: var(--accent);
+}
+.ql-select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.ql-start-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px;
+  margin-bottom: 18px;
+  background: rgba(0, 206, 201, 0.12);
+  border: 1px solid rgba(0, 206, 201, 0.35);
+  border-radius: var(--radius-md);
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ql-start-btn:hover {
+  background: var(--success);
+  color: #0a0a1a;
+  box-shadow: 0 0 20px var(--success-glow);
+}
+.ql-start-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ql-start-btn:disabled:hover {
+  background: rgba(0, 206, 201, 0.12);
+  color: var(--success);
+  box-shadow: none;
+}
+
+.ql-section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-glass);
+}
+
+.ql-running-list, .ql-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.ql-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 8px 0;
+  text-align: center;
+}
+
+.ql-project-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+}
+.ql-project-card:hover {
+  border-color: var(--border-glass-hover);
+}
+
+.ql-project-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ql-project-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ql-project-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ql-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.ql-status-badge.running {
+  background: rgba(0, 206, 201, 0.12);
+  color: var(--success);
+}
+.ql-status-badge.stopped {
+  background: rgba(255, 107, 107, 0.1);
+  color: var(--danger);
+}
+
+.ql-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ql-stop-btn {
+  padding: 5px 10px;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--danger);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.ql-stop-btn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.ql-recent-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+.ql-recent-btn:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+  border-color: var(--border-glass-hover);
+}
+
+.ql-recent-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.ql-recent-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ql-recent-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.ql-recent-path {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ql-recent-cmd {
+  font-size: 10px;
+  color: var(--accent-light);
+  font-family: 'Consolas', monospace;
+  flex-shrink: 0;
+}
